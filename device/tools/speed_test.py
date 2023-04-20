@@ -9,7 +9,7 @@ class SpeedTest:
         self.start = time.time()
 
 
-    def loop(self):
+    def loop(self, print_loops=False):
         self.cur_loop += 1
 
         if self.cur_loop == self.loops_per_print:
@@ -17,7 +17,8 @@ class SpeedTest:
             end = time.time()
             elapsed = end - self.start
             self.loops_per_second = self.loops_per_print / elapsed
-            print(str(self.loops_per_second) + " loops per second")
+            if print_loops:
+                print(str(self.loops_per_second) + " loops per second")
             self.start = end
 
     def get_loops_per_second(self):

@@ -22,20 +22,25 @@ def main():
 
     while True:
         frame = cam.get_frame()
-        frame_buffer.add(frame)
 
+        frame_buffer.add(frame)
         prediction = violence_model.add_frame(frame)
+
         if prediction is not None:
             print(prediction)
 
             if prediction > .75:
-                violence_model.save_frames()
+                loops_per_second = speed_tester.get_loops_per_second()
+
+                # save frames to video file
+                frames = violence_model.get_frames()
+                write_video(frames, "violence_", loops_per_second)
 
                 # save buffer to video file
-                prior = frame_buffer.get()
-                write_video(prior, speed_tester.get_loops_per_second())
+                buffer_frames = frame_buffer.get()
+                write_video(buffer_frames, "buffer_", loops_per_second)
 
-        speed_tester.loop()
+        speed_tester.loop(print_loops=True)
 
         # for linux
         # if input_check.check("q"):
@@ -47,15 +52,16 @@ def main():
 
     cam.release()
 
+
 def cleanup():
     pass
     # input_check.exit()
 
 
-def write_video(frames, fps):
+def write_video(frames, name, fps):
     fourcc = cv2.VideoWriter_fourcc(*"XVID")
 
-    path = config["project_path"] + FOOTAGE_PATH + "violence_" + time.strftime("%Y-%m-%d_%H-%M-%S") + ".avi"
+    path = config["project_path"] + FOOTAGE_PATH + name + time.strftime("%Y-%m-%d_%H-%M-%S") + ".avi"
 
     out = cv2.VideoWriter(path, fourcc, fps, (frames[0].shape[1], frames[0].shape[0]))
 

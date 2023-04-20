@@ -35,23 +35,15 @@ class PredictViolence(model.Model):
         frame = cv2.resize(frame, (100, 100))
         self.frames.append(frame)
 
+        if len(self.frames) > 50:
+            self.frames = self.frames[25:]
+
         if len(self.frames) == 50:
             prediction = self.run(self.frames)
-            self.frames = self.frames[25:]
             return prediction
         else:
             return None
-        
-    
-    def save_frames(self):
-        frames = self.frames
-        fourcc = cv2.VideoWriter_fourcc(*"XVID")
 
-        path = "violence_" + time.strftime("%Y-%m-%d_%H-%M-%S") + ".avi"
 
-        out = cv2.VideoWriter(path, fourcc, 25, (frames[0].shape[1], frames[0].shape[0]))
-
-        for frame in frames:
-            out.write(frame)
-
-        out.release()
+    def get_frames(self):
+        return self.frames
