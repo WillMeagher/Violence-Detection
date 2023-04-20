@@ -8,15 +8,17 @@ import time
 CAMERA_WIDTH = 160
 CAMERA_HEIGHT = 120
 
-EXPECTED_FPS = 26
 BUFFER_SECONDS = 15
+
+MODEL_PATH = "ml/models/model.h5"
+FOOTAGE_PATH = "footage/"
 
 def main():
     cam = camera.Camera((CAMERA_WIDTH, CAMERA_HEIGHT))
     speed_tester = speed_test.SpeedTest()
-    frame_buffer = buffer.Buffer(EXPECTED_FPS * BUFFER_SECONDS)
+    frame_buffer = buffer.Buffer(config["expected_fps"] * BUFFER_SECONDS)
 
-    violence_model = predict_violence.PredictViolence(config["model_path"])
+    violence_model = predict_violence.PredictViolence(config["project_path"] + MODEL_PATH)
 
     while True:
         frame = cam.get_frame()
@@ -53,7 +55,7 @@ def cleanup():
 def write_video(frames, fps):
     fourcc = cv2.VideoWriter_fourcc(*"XVID")
 
-    path = "violence_" + time.strftime("%Y-%m-%d_%H-%M-%S") + ".avi"
+    path = config["project_path"] + FOOTAGE_PATH + "violence_" + time.strftime("%Y-%m-%d_%H-%M-%S") + ".avi"
 
     out = cv2.VideoWriter(path, fourcc, fps, (frames[0].shape[1], frames[0].shape[0]))
 
