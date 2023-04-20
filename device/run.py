@@ -5,8 +5,8 @@ from ml import predict_violence
 from config import *
 import time
 
-CAMERA_WIDTH = 100
-CAMERA_HEIGHT = 100
+CAMERA_WIDTH = 160
+CAMERA_HEIGHT = 120
 
 EXPECTED_FPS = 26
 BUFFER_SECONDS = 15
@@ -31,7 +31,7 @@ def main():
 
                 # save buffer to video file
                 prior = frame_buffer.get()
-                write_video(prior)
+                write_video(prior, speed_tester.get_loops_per_second())
 
         speed_tester.loop()
 
@@ -50,12 +50,12 @@ def cleanup():
     # input_check.exit()
 
 
-def write_video(frames):
+def write_video(frames, fps):
     fourcc = cv2.VideoWriter_fourcc(*"XVID")
 
     path = "violence_" + time.strftime("%Y-%m-%d_%H-%M-%S") + ".avi"
 
-    out = cv2.VideoWriter(path, fourcc, EXPECTED_FPS, (frames[0].shape[1], frames[0].shape[0]))
+    out = cv2.VideoWriter(path, fourcc, fps, (frames[0].shape[1], frames[0].shape[0]))
 
     for frame in frames:
         out.write(frame)
