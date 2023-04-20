@@ -27,7 +27,7 @@ def main():
             print(prediction)
 
             if prediction > .75:
-                violence_model.save_frames(prediction)
+                violence_model.save_frames()
 
                 # save buffer to video file
                 prior = frame_buffer.get()
