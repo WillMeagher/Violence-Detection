@@ -6,12 +6,12 @@ from config import config
 def start():
     config_json = json.dumps(config)
     
-    process1 = Popen(["python", "server/app.py", config_json])
+    process1 = Popen(["python", config_json["project_path"] + "server/app.py", config_json])
 
     # Wait for the server to start
     time.sleep(3)
 
-    process2 = Popen(["python", "device/run.py", config_json])
+    process2 = Popen(["python", config_json["project_path"] + "device/run.py", config_json])
 
     process1.wait()
     process2.wait()
