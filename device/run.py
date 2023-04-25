@@ -53,6 +53,8 @@ def main():
             print(prediction)
 
             if prediction > float(server_config["threshold"]):
+                print("Violence detected")
+                
                 # save frames to video file
                 frames = violence_model.get_frames()
                 frames_path = write_video(frames, "violence_", loops_per_second)
@@ -63,7 +65,7 @@ def main():
 
         speed_tester.loop(print_loops=True)
 
-        if speed_tester.get_total_loops() % EXPECTED_FPS == 0:
+        if speed_tester.get_total_loops() % (EXPECTED_FPS * 5) == 0:
             cv2.imwrite(PROJECT_PATH + IMAGE_PATH, frame)
 
             with open(PROJECT_PATH + IMAGE_PATH, "rb") as f:
