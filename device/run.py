@@ -65,7 +65,7 @@ def main():
 
         speed_tester.loop(print_loops=True)
 
-        if speed_tester.get_total_loops() % (EXPECTED_FPS * 5) == 0:
+        if server_config['send_frames'] == "true" and speed_tester.get_total_loops() % (EXPECTED_FPS * 5) == 0:
             cv2.imwrite(PROJECT_PATH + IMAGE_PATH, frame)
 
             with open(PROJECT_PATH + IMAGE_PATH, "rb") as f:
