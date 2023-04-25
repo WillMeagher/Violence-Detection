@@ -1,7 +1,6 @@
 from ml import model
 import numpy as np
 import cv2
-import time
 
 class PredictViolence(model.Model):
 
@@ -32,11 +31,11 @@ class PredictViolence(model.Model):
 
 
     def add_frame(self, frame):
+        if len(self.frames) == 50:
+            self.frames = []
+
         frame = cv2.resize(frame, (100, 100))
         self.frames.append(frame)
-
-        if len(self.frames) > 50:
-            self.frames = self.frames[25:]
 
         if len(self.frames) == 50:
             prediction = self.run(self.frames)
