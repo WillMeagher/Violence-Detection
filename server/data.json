@@ -1,1 +1,1 @@
-{"email": "", "threshold": ".9", "send_frames": "false"}
+{"camera_name": "test name", "email": "test@email.com", "threshold": ".9", "send_frames": "false", "send_emails": "false"}
