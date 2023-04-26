@@ -67,7 +67,10 @@ def main():
                 buffer_path = write_video(buffer_frames, "buffer_", loops_per_second)
 
                 if server_config['send_emails'] == "true":
-                    email.send_email(server_config["email"], "Violence Detected on " + server_config["camera_name"], "Violence detected at " + time.strftime("%Y-%m-%d_%H-%M-%S"), [buffer_path])
+                    try:
+                        email.send_email(server_config["email"], "Violence Detected on " + server_config["camera_name"], "Violence detected at " + time.strftime("%Y-%m-%d_%H-%M-%S"), [buffer_path])
+                    except:
+                        print("Email failed to send")
 
         speed_tester.loop(print_loops=True)
 
