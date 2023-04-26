@@ -1,5 +1,5 @@
 import cv2
-from tools import speed_test, buffer, server# , input_check, led_controller
+from tools import speed_test, buffer, server, emailer# , input_check, led_controller
 from camera import camera
 from ml import predict_violence
 from sys import argv
@@ -39,6 +39,9 @@ def main():
 
     violence_model = predict_violence.PredictViolence(PROJECT_PATH + MODEL_PATH)
 
+    if server_config['send_emails'] == "true":
+        email = emailer.Emailer(CONFIG["emailer_email"], CONFIG["emailer_password"])
+
     # green_led.turn_on()
 
     while True:
@@ -62,6 +65,9 @@ def main():
                 # save buffer to video file
                 buffer_frames = frame_buffer.get()
                 buffer_path = write_video(buffer_frames, "buffer_", loops_per_second)
+
+                if server_config['send_emails'] == "true":
+                    email.send_email(server_config["email"], "Violence Detected on " + server_config["camera_name"], "Violence detected at " + time.strftime("%Y-%m-%d_%H-%M-%S"), [buffer_path])
 
         speed_tester.loop(print_loops=True)
 
