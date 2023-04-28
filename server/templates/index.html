@@ -74,19 +74,6 @@
             text-align: center;
         }
 	</style>
-    <script>
-        function updateLatestImage() {
-            fetch('/latest_image')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('latest-image-container').innerHTML = data;
-                })
-                .catch(error => {
-                    console.error('Error updating latest image:', error);
-                });
-        }
-        setInterval(updateLatestImage, 5000);
-    </script>
 </head>
 <body>
     {% if banner %}
@@ -96,6 +83,13 @@
 	<form method="post" action="/update" class="container">
 		<label for="camera_name">Camera Name</label>
 		<input type="text" name="camera_name" id="camera_name" value="{{ entries['camera_name'] }}" required>
+		<label for="camera_rotation">Camera Rotation (Clockwise)</label>
+		<select name="camera_rotation" id="camera_rotation" required>
+			<option value="0" {% if entries['camera_rotation'] == '0' %}selected{% endif %}>0</option>
+			<option value="90" {% if entries['camera_rotation'] == '90' %}selected{% endif %}>90</option>
+			<option value="180" {% if entries['camera_rotation'] == '180' %}selected{% endif %}>180</option>
+			<option value="270" {% if entries['camera_rotation'] == '270' %}selected{% endif %}>270</option>
+		</select>
 		<label for="email">Email Address</label>
 		<input type="email" name="email" id="email" value="{{ entries['email'] }}" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" required>
 		<label for="send_emails">Send Emails when Violence is Detected</label>
@@ -105,7 +99,7 @@
 		</select>
 		<label for="threshold">Threshold</label>
 		<input type="number" name="threshold" id="threshold" value="{{ entries['threshold'] }}" min="0" max="1" step="0.01" required>
-		<label for="send_frames">Send Frames to GUI</label>
+		<label for="send_frames">Display Live Feed Below (This may decrease performance)</label>
 		<select name="send_frames" id="send_frames" required>
 			<option value="true" {% if entries['send_frames'] == 'true' %}selected{% endif %}>Yes</option>
 			<option value="false" {% if entries['send_frames'] == 'false' %}selected{% endif %}>No</option>
@@ -114,7 +108,7 @@
 	</form>
     <h1>Video Feed</h1>
     <div class="container">
-        <div id="latest-image-container"><video autoplay></video></div>
+        <img src="{{ url_for('frame_route') }}" width="400" height="400" id="latest-image">
     </div>
 </body>
 </html>

@@ -9,6 +9,7 @@ import json
 if len(argv) > 1:
     CONFIG = json.loads(argv[1])
 else:
+    print("No config")
     exit()
 
 CAMERA_WIDTH = 160
@@ -27,11 +28,20 @@ GREEN_PIN = 17
 # green_led = led_controller.LEDController(GREEN_PIN)
 
 def main():
-    if not server.config_set():
+    server_config = server.get_config()
+    if not all(server_config.values()):
         print("Server config not set")
         return
-    else:
-        server_config = server.get_config()
+    
+    camera_rotation = int(server_config["camera_rotation"])
+    image_rotation = None
+    match camera_rotation:
+        case 90:
+            image_rotation = cv2.ROTATE_90_COUNTERCLOCKWISE
+        case 180:
+            image_rotation = cv2.ROTATE_180
+        case 270:
+            image_rotation = cv2.ROTATE_90_CLOCKWISE
 
     cam = camera.Camera((CAMERA_WIDTH, CAMERA_HEIGHT))
     speed_tester = speed_test.SpeedTest()
@@ -47,6 +57,9 @@ def main():
     while True:
         frame = cam.get_frame()
 
+        if image_rotation is not None:
+            frame = cv2.rotate(frame, image_rotation)
+
         frame_buffer.add(frame)
         prediction = violence_model.add_frame(frame)
 
@@ -58,10 +71,6 @@ def main():
             if prediction > float(server_config["threshold"]):
                 print("Violence detected")
                 
-                # save frames to video file
-                frames = violence_model.get_frames()
-                frames_path = write_video(frames, "violence_", loops_per_second)
-
                 # save buffer to video file
                 buffer_frames = frame_buffer.get()
                 buffer_path = write_video(buffer_frames, "buffer_", loops_per_second)
@@ -74,11 +83,10 @@ def main():
 
         speed_tester.loop(print_loops=True)
 
-        if server_config['send_frames'] == "true" and speed_tester.get_total_loops() % (EXPECTED_FPS * 5) == 0:
-            cv2.imwrite(PROJECT_PATH + IMAGE_PATH, frame)
-
-            with open(PROJECT_PATH + IMAGE_PATH, "rb") as f:
-                r = server.post_frame(f)
+        if server_config['send_frames'] == "true" and speed_tester.get_total_loops() % int(EXPECTED_FPS / 5) == 0:
+            encoded_img = cv2.imencode('.jpg',frame)[1]
+            img_string = encoded_img.tobytes()
+            server.send_frame(img_string)
 
         # for linux
         # if input_check.check("q"):
