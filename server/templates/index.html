@@ -108,7 +108,23 @@
 	</form>
     <h1>Video Feed</h1>
     <div class="container">
-        <img src="{{ url_for('frame_route') }}" width="400" height="400" id="latest-image">
-    </div>
+		<img src="{{ url_for('frame_route') }}" width="400" height="400" id="latest-image" style="border: 1px solid black;">
+		<div style="text-align: left; margin: 0 auto; width: 400px;">
+			<p style="display: inline-block;font-size: 18px;">Probability of Violence:</p>
+			<span id="last-prediction" style="font-size: 18px;"></span>
+		</div>
+	</div>
+
+    <script>
+        function updateLastPrediction() {
+            fetch('/last_prediction')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('last-prediction').innerText = data;
+                });
+        }
+        updateLastPrediction();
+        setInterval(updateLastPrediction, 1000);
+    </script>
 </body>
 </html>

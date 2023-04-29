@@ -6,7 +6,9 @@ class PredictViolence(model.Model):
 
     def __init__(self, models_path):
         super().__init__(models_path)
-        self.frames = []
+        self.flow = []
+        self.last_frame = None
+        self.last_prediction = 0.0
 
 
     def run(self, input):
@@ -19,6 +21,7 @@ class PredictViolence(model.Model):
         prediction = prediction[0][1]
 
         prediction = round(prediction, 3)
+        self.last_prediction = prediction
 
         return prediction
 
@@ -31,18 +34,23 @@ class PredictViolence(model.Model):
 
 
     def add_frame(self, frame):
-        if len(self.frames) == 50:
-            self.frames = []
+        if len(self.flow) == 50:
+            self.flow = []
+            self.last_frame = None
 
         frame = cv2.resize(frame, (100, 100))
-        self.frames.append(frame)
 
-        if len(self.frames) == 50:
-            prediction = self.run(self.frames)
+        if self.last_frame is not None:
+            flow = self.last_frame - frame
+            self.flow.append(flow)
+
+        self.last_frame = frame
+
+        if len(self.flow) == 50:
+            prediction = self.run(self.flow)
             return prediction
         else:
             return None
 
-
-    def get_frames(self):
-        return self.frames
+    def get_last_prediction(self):
+        return self.last_prediction

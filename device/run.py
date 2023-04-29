@@ -73,11 +73,14 @@ def main():
                 
                 # save buffer to video file
                 buffer_frames = frame_buffer.get()
-                buffer_path = write_video(buffer_frames, "buffer_", loops_per_second)
+                file_name = "Violence_Detected_on_Camera_" + server_config["camera_name"].replace(" ", "_") + "_at_" + time.strftime("%Y-%m-%d_%H-%M-%S")
+                buffer_path = write_video(buffer_frames, file_name, loops_per_second)
 
                 if server_config['send_emails'] == "true":
                     try:
-                        email.send_email(server_config["email"], "Violence Detected on " + server_config["camera_name"], "Violence detected at " + time.strftime("%Y-%m-%d_%H-%M-%S"), [buffer_path])
+                        subject = "Violence Detected on " + server_config["camera_name"]
+                        body = "Violence detected on camera " + server_config["camera_name"] + " at " + time.strftime("%Y-%m-%d_%H-%M-%S")
+                        email.send_email(server_config["email"], subject, body, [buffer_path])
                     except:
                         print("Email failed to send")
 
@@ -87,6 +90,9 @@ def main():
             encoded_img = cv2.imencode('.jpg',frame)[1]
             img_string = encoded_img.tobytes()
             server.send_frame(img_string)
+
+            last_prediction = str(violence_model.get_last_prediction())
+            server.send_prediction(last_prediction)
 
         # for linux
         # if input_check.check("q"):
@@ -106,9 +112,9 @@ def cleanup():
 
 
 def write_video(frames, name, fps):
-    fourcc = cv2.VideoWriter_fourcc(*"XVID")
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    path = PROJECT_PATH + FOOTAGE_PATH + name + time.strftime("%Y-%m-%d_%H-%M-%S") + ".avi"
+    path = PROJECT_PATH + FOOTAGE_PATH + name + ".mp4"
 
     out = cv2.VideoWriter(path, fourcc, fps, (frames[0].shape[1], frames[0].shape[0]))
 

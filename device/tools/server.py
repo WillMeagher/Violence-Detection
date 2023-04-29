@@ -7,3 +7,6 @@ def get_config():
 
 def send_frame(frame):
     return requests.post(SERVER_URL + '/frame', data=frame)
+
+def send_prediction(last_prediction):
+    return requests.post(SERVER_URL + '/last_prediction', data=last_prediction)
