@@ -1,6 +1,5 @@
 import cv2
-from tools import speed_test, buffer, server, emailer# , input_check, led_controller
-from camera import camera
+from tools import speed_test, buffer, server, emailer, camera# , input_check, led_controller
 from ml import predict_violence
 from sys import argv
 import time
