@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, Response
+from flask import Flask, render_template, request, redirect, url_for, Response, flash
 from sys import argv
 import json
 import time
@@ -11,6 +11,8 @@ else:
     exit()
 
 app = Flask(__name__)
+
+app.secret_key = CONFIG["secret_key"]
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -38,8 +40,7 @@ def get_frames():
 @app.route('/')
 def index():
     data = read_data()
-    banner = request.args.get('banner', '')
-    return render_template('index.html', entries=data, banner=banner)
+    return render_template('index.html', entries=data)
 
 @app.route('/update', methods=['POST'])
 def update_data():
@@ -47,7 +48,8 @@ def update_data():
     for key in data.keys():
         data[key] = request.form[key]
     write_data(data)
-    return redirect(url_for('index', banner='Data updated successfully! Restart the camera to see the changes.'))
+    flash('Data updated successfully! Restart the camera to see the changes.')
+    return redirect(url_for('index'))
 
 @app.route('/config')
 def config_data():

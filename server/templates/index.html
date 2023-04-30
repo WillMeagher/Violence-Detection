@@ -76,9 +76,9 @@
 	</style>
 </head>
 <body>
-    {% if banner %}
-      <div class="success-banner">{{ banner }}</div>
-    {% endif %}
+	{% for mess in get_flashed_messages()  %}
+		<div class="success-banner">{{ mess }}</div>
+	{% endfor %}
 	<h1>Configuration</h1>
 	<form method="post" action="/update" class="container">
 		<label for="camera_name">Camera Name</label>
