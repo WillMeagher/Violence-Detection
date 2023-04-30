@@ -85,7 +85,7 @@ def main():
 
         speed_tester.loop(print_loops=True)
 
-        if server_config['send_frames'] == "true" and speed_tester.get_total_loops() % int(EXPECTED_FPS / 5) == 0:
+        if server_config['send_frames'] == "true" and speed_tester.get_total_loops() % max(int(EXPECTED_FPS / 5), 1) == 0:
             encoded_img = cv2.imencode('.jpg',frame)[1]
             img_string = encoded_img.tobytes()
             server.send_frame(img_string)
