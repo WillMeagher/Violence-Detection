@@ -35,13 +35,12 @@ def main():
     
     camera_rotation = int(server_config["camera_rotation"])
     image_rotation = None
-    match camera_rotation:
-        case 90:
-            image_rotation = cv2.ROTATE_90_COUNTERCLOCKWISE
-        case 180:
-            image_rotation = cv2.ROTATE_180
-        case 270:
-            image_rotation = cv2.ROTATE_90_CLOCKWISE
+    if camera_rotation == 90:
+        image_rotation = cv2.ROTATE_90_COUNTERCLOCKWISE
+    elif camera_rotation == 180:
+        image_rotation = cv2.ROTATE_180
+    elif camera_rotation == 270:
+        image_rotation = cv2.ROTATE_90_CLOCKWISE
 
     cam = camera.Camera((CAMERA_WIDTH, CAMERA_HEIGHT))
     speed_tester = speed_test.SpeedTest()
