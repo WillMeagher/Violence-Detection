@@ -9,7 +9,7 @@ def start():
     process1 = Popen(["python", config["project_path"] + "server/app.py", config_json])
 
     # Wait for the server to start
-    time.sleep(3)
+    time.sleep(1)
 
     process2 = Popen(["python", config["project_path"] + "device/run.py", config_json])
 
