@@ -90,8 +90,8 @@ def main():
             img_string = encoded_img.tobytes()
             server.send_frame(img_string)
 
-            last_prediction = str(violence_model.get_last_prediction())
-            server.send_prediction(last_prediction)
+        last_prediction = str(violence_model.get_last_prediction())
+        server.send_prediction(last_prediction)
 
         # for linux
         # if input_check.check("q"):
