@@ -23,7 +23,7 @@ IMAGE_PATH = "images/frame.jpg"
 PROJECT_PATH = CONFIG["project_path"] + "device/"
 EXPECTED_FPS = CONFIG["expected_fps"]
 
-GREEN_PIN = 17
+GREEN_PIN = 27
 # green_led = led_controller.LEDController(GREEN_PIN)
 
 def main():
