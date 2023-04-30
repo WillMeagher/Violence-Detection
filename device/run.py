@@ -107,6 +107,7 @@ def main():
 def cleanup():
     pass
     # green_led.turn_off()
+    # green_led.cleanup()
     # input_check.exit()
 
 
