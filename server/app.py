@@ -22,9 +22,14 @@ last_prediction = "No prediction yet"
 
 THIS_PATH = CONFIG["project_path"] + "server/"
 DATA_FILE = THIS_PATH + 'data.json'
+DEFAULT_DATA_FILE = THIS_PATH + 'default_data.json'
 
 def read_data():
     with open(DATA_FILE, 'r') as f:
+        return json.load(f)
+    
+def read_default_data():
+    with open(DEFAULT_DATA_FILE, 'r') as f:
         return json.load(f)
 
 def write_data(data):
@@ -77,6 +82,13 @@ def last_prediction_route():
     else:
         last_prediction = request.data
         return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+@app.route('/reset_config')
+def reset_config():
+    data = read_default_data()
+    write_data(data)
+    flash('Config reset successfully! Restart the camera to see the changes.')
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

@@ -48,7 +48,7 @@
 		select::-ms-expand {
 			display: none;
 		}
-		button[type="submit"] {
+		button[type="submit"], a {
 			background-color: #4CAF50;
 			color: #fff;
 			padding: 10px 20px;
@@ -57,9 +57,16 @@
 			font-size: 16px;
 			cursor: pointer;
 			transition: background-color 0.3s ease;
+			text-decoration: none;
 		}
-		button[type="submit"]:hover {
+		button[type="submit"]:hover{
 			background-color: #3e8e41;
+		}
+		a {
+			background-color: #f44336;
+		}
+		a:hover {
+			background-color: #d32f2f;
 		}
         .success-banner {
             background-color: #4CAF50;
@@ -105,6 +112,7 @@
 			<option value="false" {% if entries['send_frames'] == 'false' %}selected{% endif %}>No</option>
 		</select>
 		<button type="submit">Update</button>
+		<a href="/reset_config" style="margin-left: 40px">Reset</a>
 	</form>
     <h1>Video Feed</h1>
     <div class="container">
