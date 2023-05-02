@@ -1,5 +1,5 @@
 import cv2
-from tools import speed_test, buffer, server, emailer, camera# , input_check, led_controller
+from tools import speed_test, buffer, server, emailer, camera# , input_check, led_controller, pi_camera
 from ml import predict_violence
 from sys import argv
 import time
@@ -11,8 +11,8 @@ else:
     print("No config")
     exit()
 
-CAMERA_WIDTH = 160
-CAMERA_HEIGHT = 120
+CAMERA_WIDTH = 100
+CAMERA_HEIGHT = 100
 
 BUFFER_SECONDS = 15
 
@@ -42,6 +42,7 @@ def main():
         image_rotation = cv2.ROTATE_90_CLOCKWISE
 
     cam = camera.Camera((CAMERA_WIDTH, CAMERA_HEIGHT))
+    # cam = picamera.Camera((CAMERA_WIDTH, CAMERA_HEIGHT))
     speed_tester = speed_test.SpeedTest()
     frame_buffer = buffer.Buffer(EXPECTED_FPS * BUFFER_SECONDS)
 
