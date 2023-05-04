@@ -4,6 +4,7 @@ from ml import predict_violence
 from sys import argv
 import time
 import json
+import os
 
 if len(argv) > 1:
     CONFIG = json.loads(argv[1])
@@ -24,6 +25,8 @@ PROJECT_PATH = CONFIG["project_path"] + "device/"
 EXPECTED_FPS = CONFIG["expected_fps"]
 
 GREEN_PIN = 27
+
+send_email_file = None
 # green_led = led_controller.LEDController(GREEN_PIN)
 
 def main():
@@ -74,14 +77,18 @@ def main():
                 buffer_frames = frame_buffer.get()
                 file_name = "Violence_Detected_on_Camera_" + server_config["camera_name"].replace(" ", "_") + "_at_" + time.strftime("%Y-%m-%d_%H-%M-%S")
                 buffer_path = write_video(buffer_frames, file_name, loops_per_second)
-
                 if server_config['send_emails'] == "true":
-                    try:
-                        subject = "Violence Detected on " + server_config["camera_name"]
-                        body = "Violence detected on camera " + server_config["camera_name"] + " at " + time.strftime("%Y-%m-%d_%H-%M-%S")
-                        email.send_email(server_config["email"], subject, body, [buffer_path])
-                    except:
-                        print("Email failed to send")
+                    send_email_file = buffer_path
+
+        if send_email_file is not None:
+            if os.path.exists(send_email_file):
+                try:
+                    subject = "Violence Detected on " + server_config["camera_name"]
+                    body = "Violence detected on camera " + server_config["camera_name"] + " at " + time.strftime("%Y-%m-%d_%H-%M-%S")
+                    email.send_email(server_config["email"], subject, body, [buffer_path])
+                    send_email_file = None
+                except:
+                    print("Email failed to send")
 
         speed_tester.loop(print_loops=True)
 
